@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Loan Preapproval Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="bg-gradient-to-b from-blue-50 to-white min-h-screen">
+  <nav class="bg-white shadow-md py-4 px-6 mb-8">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-blue-700">🏠 Home Loan Preapproval</h1>
+      <ul class="flex space-x-4 text-gray-600 font-medium">
+        <li><a href="#calculator" class="hover:text-blue-600">Calculator</a></li>
+        <li><a href="#result" class="hover:text-blue-600">Results</a></li>
+        <li><a href="#" class="hover:text-blue-600">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="flex items-center justify-center px-4">
+    <div class="w-full max-w-3xl p-8 bg-white rounded-2xl shadow-xl">
+      <h2 class="text-3xl font-bold text-center text-blue-800 mb-8">Home Loan Preapproval Calculator</h2>
+      <form id="calculator" class="space-y-8">
+        <div>
+          <label for="applicantType" class="block font-medium text-gray-700">Application Type</label>
+          <select id="applicantType" name="applicantType" class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            <option value="single">Single</option>
+            <option value="partner">Partner</option>
+          </select>
+        </div>
+
+        <div class="border-t pt-6">
+          <h3 class="text-xl font-semibold text-blue-700 mb-4">👤 Applicant 1</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="income" class="block font-medium text-gray-700">Monthly Income</label>
+              <input type="number" id="income" name="income" required class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            </div>
+            <div>
+              <label for="debts" class="block font-medium text-gray-700">Monthly Debts</label>
+              <input type="number" id="debts" name="debts" required class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            </div>
+            <div>
+              <label for="creditScore" class="block font-medium text-gray-700">Credit Score</label>
+              <input type="number" id="creditScore" name="creditScore" required class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            </div>
+          </div>
+        </div>
+
+        <div id="partnerFields" class="hidden border-t pt-6">
+          <h3 class="text-xl font-semibold text-blue-700 mb-4">👥 Applicant 2</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="income2" class="block font-medium text-gray-700">Monthly Income</label>
+              <input type="number" id="income2" name="income2" class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            </div>
+            <div>
+              <label for="debts2" class="block font-medium text-gray-700">Monthly Debts</label>
+              <input type="number" id="debts2" name="debts2" class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            </div>
+            <div>
+              <label for="creditScore2" class="block font-medium text-gray-700">Credit Score</label>
+              <input type="number" id="creditScore2" name="creditScore2" class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t pt-6">
+          <h3 class="text-xl font-semibold text-blue-700 mb-4">📄 Loan Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="loanType" class="block font-medium text-gray-700">Loan Type</label>
+              <select id="loanType" name="loanType" class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                <option value="conventional">Conventional</option>
+                <option value="fha">FHA</option>
+                <option value="va">VA</option>
+              </select>
+            </div>
+            <div>
+              <label for="loanTerm" class="block font-medium text-gray-700">Loan Term (Years)</label>
+              <select id="loanTerm" name="loanTerm" class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="30" selected>30</option>
+              </select>
+            </div>
+            <div>
+              <label for="downPayment" class="block font-medium text-gray-700">Down Payment (%)</label>
+              <input type="number" id="downPayment" name="downPayment" value="10" required class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-indigo-700 shadow-lg transition">📊 Calculate</button>
+      </form>
+      <div id="result" class="mt-8 text-center text-gray-800 text-lg font-medium"></div>
+      <div class="mt-4 text-center text-sm text-gray-600" id="dtiDisplay"></div>
+      <div class="mt-8 flex justify-center">
+        <canvas id="paymentChart" width="200" height="200"></canvas>
+      </div>
+      <div class="mt-6 text-center">
+        <button id="downloadExcel" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded">📥 Save Results as Excel</button>
+        <p id="excelConfirmation" class="text-green-600 font-medium mt-2 hidden">✅ Excel file downloaded!</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('applicantType').addEventListener('change', function () {
+      const partnerFields = document.getElementById('partnerFields');
+      partnerFields.classList.toggle('hidden', this.value !== 'partner');
+    });
+
+    let lastCalculation = null;
+
+    document.getElementById('calculator').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const income1 = parseFloat(document.getElementById('income').value) || 0;
+      const debts1 = parseFloat(document.getElementById('debts').value) || 0;
+      const income2 = parseFloat(document.getElementById('income2').value) || 0;
+      const debts2 = parseFloat(document.getElementById('debts2').value) || 0;
+      const loanTerm = parseInt(document.getElementById('loanTerm').value);
+      const downPaymentPercent = parseFloat(document.getElementById('downPayment').value);
+
+      const totalIncome = income1 + income2;
+      const totalDebts = debts1 + debts2;
+      const maxDTI = 0.43;
+      const availableForMortgage = (totalIncome * maxDTI) - totalDebts;
+
+      const dtiPercent = ((totalDebts + availableForMortgage) / totalIncome) * 100;
+      document.getElementById('dtiDisplay').textContent = `Estimated DTI: ${dtiPercent.toFixed(1)}%`;
+
+      const annualRate = 0.07;
+      const monthlyRate = annualRate / 12;
+      const numberOfPayments = loanTerm * 12;
+
+      const loanAmount = (availableForMortgage * (1 - Math.pow(1 + monthlyRate, -numberOfPayments))) / monthlyRate;
+      const homePrice = loanAmount / ((100 - downPaymentPercent) / 100);
+
+      document.getElementById('result').textContent = `Estimated Home Price: $${homePrice.toFixed(0)} | Estimated Monthly Mortgage: $${availableForMortgage.toFixed(0)}`;
+
+      lastCalculation = {
+        income1, debts1, income2, debts2, totalIncome, totalDebts,
+        dtiPercent: dtiPercent.toFixed(1), availableForMortgage: availableForMortgage.toFixed(0),
+        loanAmount: loanAmount.toFixed(0), homePrice: homePrice.toFixed(0)
+      };
+
+      const ctx = document.getElementById('paymentChart').getContext('2d');
+      if (window.paymentChart && typeof window.paymentChart.destroy === 'function') {
+        window.paymentChart.destroy();
+      }
+      window.paymentChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Mortgage', 'Remaining Income'],
+          datasets: [{
+            data: [availableForMortgage, totalIncome - availableForMortgage],
+            backgroundColor: ['#3b82f6', '#d1d5db'],
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    });
+
+    document.getElementById('downloadExcel').addEventListener('click', () => {
+      if (!lastCalculation) return alert('Please calculate results first.');
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet([lastCalculation]);
+      XLSX.utils.book_append_sheet(wb, ws, 'Results');
+      XLSX.writeFile(wb, 'HomeLoanPreapproval.xlsx');
+      document.getElementById('excelConfirmation').classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
