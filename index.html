@@ -23,6 +23,15 @@
       scroll-behavior: smooth;
       scroll-padding-top: 5rem;
     }
+    #aboutPanel {
+      transition: transform 0.3s ease-in-out;
+    }
+    .about-slide-hidden {
+      transform: translateX(100%);
+    }
+    .about-slide-visible {
+      transform: translateX(0);
+    }
   </style>
 </head>
 <body class="bg-gradient-to-b from-blue-50 to-white min-h-screen">
@@ -33,7 +42,7 @@
       <ul class="flex space-x-4 text-gray-600 font-medium">
         <li><a href="#calculator" class="hover:text-blue-600">Calculator</a></li>
         <li><a href="#result" class="hover:text-blue-600">Results</a></li>
-        <li><a href="#about" class="hover:text-blue-600">About</a></li>
+        <li><button onclick="toggleAboutPanel()" class="hover:text-blue-600">About</button></li>
       </ul>
     </div>
   </nav>
@@ -42,40 +51,92 @@
   <main class="flex items-center justify-center px-4" id="calculator">
     <div class="w-full max-w-3xl p-8 bg-white rounded-2xl shadow-xl">
       <h2 class="text-3xl font-bold text-center text-blue-800 mb-8">Home Loan Preapproval Calculator</h2>
-      
-      <!-- FORM GOES HERE (you already have it in place, not repeated for brevity) -->
 
-      <!-- RESULTS, CHART, EXCEL EXPORT ETC GO HERE -->
+      <!-- REINSERTED FORM -->
+      <form id="calculatorForm" class="space-y-6">
+        <div>
+          <label for="applicantType" class="block text-gray-700 font-medium">Application Type</label>
+          <select id="applicantType" class="w-full border border-gray-300 rounded px-3 py-2">
+            <option value="single">Single</option>
+            <option value="partner">Partner</option>
+          </select>
+        </div>
+
+        <fieldset>
+          <legend class="text-blue-700 font-semibold">Applicant 1</legend>
+          <input type="number" id="income1" placeholder="Monthly Income" class="w-full border rounded px-3 py-2 mt-2" required>
+          <input type="number" id="debts1" placeholder="Monthly Debts" class="w-full border rounded px-3 py-2 mt-2" required>
+          <input type="number" id="creditScore1" placeholder="Credit Score" class="w-full border rounded px-3 py-2 mt-2" required>
+        </fieldset>
+
+        <fieldset id="applicant2Section" class="hidden">
+          <legend class="text-blue-700 font-semibold">Applicant 2</legend>
+          <input type="number" id="income2" placeholder="Monthly Income" class="w-full border rounded px-3 py-2 mt-2">
+          <input type="number" id="debts2" placeholder="Monthly Debts" class="w-full border rounded px-3 py-2 mt-2">
+          <input type="number" id="creditScore2" placeholder="Credit Score" class="w-full border rounded px-3 py-2 mt-2">
+        </fieldset>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="loanType" class="block text-gray-700 font-medium">Loan Type</label>
+            <select id="loanType" class="w-full border border-gray-300 rounded px-3 py-2">
+              <option value="conventional">Conventional</option>
+              <option value="fha">FHA</option>
+              <option value="va">VA</option>
+            </select>
+          </div>
+          <div>
+            <label for="loanTerm" class="block text-gray-700 font-medium">Loan Term (Years)</label>
+            <select id="loanTerm" class="w-full border border-gray-300 rounded px-3 py-2">
+              <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="30" selected>30</option>
+            </select>
+          </div>
+          <div>
+            <label for="downPayment" class="block text-gray-700 font-medium">Down Payment (%)</label>
+            <input type="number" id="downPayment" value="10" class="w-full border border-gray-300 rounded px-3 py-2">
+          </div>
+        </div>
+
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Calculate</button>
+      </form>
+
+      <div id="result" class="mt-6 text-lg text-center text-gray-800 font-medium"></div>
+      <canvas id="chart" class="mt-4 mx-auto"></canvas>
     </div>
   </main>
 
-  <!-- ABOUT SECTION -->
-  <section id="about" class="mt-20 px-6 py-12 bg-white border-t border-gray-200">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold text-blue-700 mb-4">📘 About This Tool</h2>
-      <p class="text-gray-700 mb-4">
-        This home loan preapproval calculator helps estimate the maximum home price and monthly mortgage payment based on your income, debts, and selected loan type. It's ideal for both single and joint applicants looking to plan their home purchase.
-      </p>
-      <h3 class="text-lg font-semibold text-gray-800 mt-6 mb-2">🧮 Formulas Used:</h3>
-      <ul class="list-disc ml-6 text-gray-700 space-y-2">
-        <li><strong>Total Income:</strong> Monthly income of applicant 1 + applicant 2</li>
-        <li><strong>Total Debts:</strong> Monthly debts of applicant 1 + applicant 2</li>
-        <li><strong>Maximum Allowable DTI:</strong> 43% (industry standard)</li>
-        <li><strong>Available for Mortgage:</strong> (Total Income × 0.43) − Total Debts</li>
-        <li><strong>Monthly Rate:</strong> 7% annual rate ÷ 12 months</li>
-        <li><strong>Loan Amount:</strong> 
-          \[
-          \text{Available for Mortgage} \times \left(\frac{1 - (1 + r)^{-n}}{r}\right)
-          \]
-          where r = monthly rate, n = number of payments (term × 12)
-        </li>
-        <li><strong>Home Price:</strong> 
-          \[
-          \text{Loan Amount} \div \left(1 - \frac{\text{Down Payment \%}}{100}\right)
-          \]
-        </li>
-      </ul>
-    </div>
-  </section>
+  <!-- ABOUT SLIDE PANEL -->
+  <div id="aboutPanel" class="fixed top-0 right-0 w-full max-w-md h-full bg-white shadow-lg p-6 overflow-y-auto about-slide-hidden z-50">
+    <button onclick="toggleAboutPanel()" class="text-red-600 font-bold float-right">✖</button>
+    <h2 class="text-2xl font-bold text-blue-700 mb-4 mt-8">📘 About This Tool</h2>
+    <p class="text-gray-700 mb-4">
+      This home loan preapproval calculator helps estimate the maximum home price and monthly mortgage payment based on your income, debts, and selected loan type. It's ideal for both single and joint applicants looking to plan their home purchase.
+    </p>
+    <h3 class="text-lg font-semibold text-gray-800 mt-6 mb-2">🧮 Formulas Used:</h3>
+    <ul class="list-disc ml-6 text-gray-700 space-y-2">
+      <li><strong>Total Income:</strong> Monthly income of applicant 1 + applicant 2</li>
+      <li><strong>Total Debts:</strong> Monthly debts of applicant 1 + applicant 2</li>
+      <li><strong>Maximum Allowable DTI:</strong> 43% (industry standard)</li>
+      <li><strong>Available for Mortgage:</strong> (Total Income × 0.43) − Total Debts</li>
+      <li><strong>Monthly Rate:</strong> 7% annual rate ÷ 12 months</li>
+      <li><strong>Loan Amount:</strong> (Available for Mortgage × (1 - (1 + r)^-n)) ÷ r</li>
+      <li><strong>Home Price:</strong> Loan Amount ÷ (1 - (Down Payment % / 100))</li>
+    </ul>
+  </div>
+
+  <script>
+    document.getElementById('applicantType').addEventListener('change', function () {
+      const isPartner = this.value === 'partner';
+      document.getElementById('applicant2Section').classList.toggle('hidden', !isPartner);
+    });
+
+    function toggleAboutPanel() {
+      const panel = document.getElementById('aboutPanel');
+      panel.classList.toggle('about-slide-hidden');
+      panel.classList.toggle('about-slide-visible');
+    }
+  </script>
 </body>
 </html>
